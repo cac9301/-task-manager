@@ -46,7 +46,7 @@ const FormTask = ({setselecttask}) => {
             { name: name, idtask: null }}
           validationSchema={Yup.object({
             name: Yup.string()
-              .max(15, "Must be 15 characters or less")
+              .max(30, "Must be 30 characters or less")
               .required("task its Required"),
           })}
           onSubmit={(values, { resetForm }) => {

@@ -29,7 +29,9 @@ export default (state, action) => {
       case UPDATE_TASK:
       return {
         ...state,
-        tasks:state.taskproyect.map((task) => task.idtask === action.payload.idtask?action.payload:task)
+        tasks:state.taskproyect.map((task) => task.idtask === action.payload.idtask?action.payload:task),
+        taskedit: null
+
       };
     default:
       return state;
