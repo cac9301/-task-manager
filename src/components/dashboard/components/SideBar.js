@@ -1,5 +1,6 @@
 import React from "react";
 //material-ui
+import Button from '@material-ui/core/Button';
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -20,7 +21,7 @@ import perfil from './perfil.png';
 import FormNewProyect from "./FormNewProyect";
 import ListPro from "./ListPro";
 
-const SideBar = () => {
+const SideBar = ({user}) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -48,13 +49,13 @@ const SideBar = () => {
           <Grid container spacing={3}>
             <Grid item xs={6}>
             <Typography component="h2" variant="h6" color="inherit" noWrap className={classes.title_header}>
-            Dashboard Cliente Mern Task
+            {user?`Dashboard ${user.firstName} ${user.lastName} Mern Task`:null}
           </Typography>
         </Grid>
         <Grid className={classes.header_avatar} item xs={6}>
         
         <Typography component="h2" variant="h6" color="inherit" noWrap align="right">
-            Close Section
+        <Button>Close Section</Button>
           </Typography>
           <Avatar  alt="carlos" src={perfil} /> 
         </Grid>

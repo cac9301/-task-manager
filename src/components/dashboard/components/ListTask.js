@@ -18,25 +18,26 @@ const useStyles = makeStyles((theme)=>({
   },
 }));
 
-export default function SimpleTable() {
+export default function SimpleTable({proyect}) {
   const taskContext = useContext(TaskContext);
   const { taskproyect,deleteTaskForId,
     getTaskForId,selectEditTask } = taskContext;
   const classes = useStyles();
   if (taskproyect === null) return;
-  
+
   const handledelete = (id,idp) =>{
-    deleteTaskForId(id);
+    deleteTaskForId(id,idp);
     getTaskForId(idp);
   }
 
   return (
     <List component="nav" aria-label="secondary mailbox folders">
       {taskproyect.map((row) => (
+        
         <>
           <Grid 
           container spacing={4}
-          key={row.idtask}
+          key={row._id}
           className={classes.list}>
             <Grid  
             item
@@ -53,7 +54,7 @@ export default function SimpleTable() {
                 className={classes.submit}
                 fullWidth
                 startIcon={<DeleteIcon />}
-                onClick={()=>handledelete(row.idtask,row.id)}
+                onClick={()=>handledelete(row._id,row.proyect_)}
               >
                 Delete task
               </Button>
@@ -67,7 +68,7 @@ export default function SimpleTable() {
                 startIcon={<EditIcon />}
                 className={classes.submit}
                 fullWidth
-                onClick={()=>selectEditTask(row.idtask)}
+                onClick={()=>selectEditTask(row._id)}
               >
                 Edit task
               </Button>

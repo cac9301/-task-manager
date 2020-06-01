@@ -21,7 +21,7 @@ const FormTask = ({setselecttask}) => {
   const { addNewTask, getTaskForId,taskedit,uppdateTask } = taskContext;
   const [name, setname] = useState("");
   const [objet, setobjet] = useState({});
-  var id = proyect[0].id;
+  var id = proyect[0]._id;
 // state local
 
   
@@ -30,11 +30,11 @@ const FormTask = ({setselecttask}) => {
       setselecttask(taskedit[0].name)
       setname(taskedit[0].name);
       setobjet(taskedit[0]);
+    //eslint-disable-next-line to ignore the next line.
     }else{
       setname("");
     }
-  }, [taskedit])
-  console.log(objet.idtask);
+  }, [taskedit,setname])
  
 
   return (
@@ -43,7 +43,7 @@ const FormTask = ({setselecttask}) => {
       <Container maxWidth="sm">
         <Formik
           initialValues={
-            { name: name, idtask: null }}
+            { name: name, proyect_: null }}
           validationSchema={Yup.object({
             name: Yup.string()
               .max(30, "Must be 30 characters or less")
@@ -52,20 +52,18 @@ const FormTask = ({setselecttask}) => {
           onSubmit={(values, { resetForm }) => {
             //tarea nueva
             if(taskedit===null){
-              values.id = id;
-              console.log(values);
+              values.proyect_ = id
               addNewTask(values);
             //editandato  
             }else{
-              values.id = id;
-              values.idtask = objet.idtask;
-              uppdateTask(values)
-              console.log("los valores editados son :",values);
-              
+              values.proyect_ = objet.proyect_
+              values._id = objet._id;
+              uppdateTask(values);
+              setselecttask("");
             }
             getTaskForId(id);
               resetForm({
-                values: { name: "", idtask: null },
+                values: { name: "", proyect_: null },
               });
             
           }}

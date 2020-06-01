@@ -3,33 +3,31 @@ import { GET_TASK, ADD_TASK, DELETE_TASK,EDIT_TASK,
 
 export default (state, action) => {
   switch (action.type) {
-    case GET_TASK:
-      return {
-        ...state,
-        taskproyect: state.tasks.filter(
-          (taskproyect) => taskproyect.id === action.payload
-        )
-      };
     case ADD_TASK:
       return {
         ...state,
-        tasks: [...state.tasks, action.payload],
+        taskproyect: [...state.taskproyect, action.payload]
       };
+      case GET_TASK:
+        return {
+          ...state,
+          taskproyect:action.payload,
+        };
     case DELETE_TASK:
       return {
         ...state,
-        tasks:state.tasks.filter(task=>task.idtask !== action.payload),
+        taskproyect:state.taskproyect.filter(task=>task._id !== action.payload),
       };
       case EDIT_TASK:
       return {
         ...state,
-        taskedit:state.tasks.filter(
-          (taskproyect) => taskproyect.idtask === action.payload)
+        taskedit:state.taskproyect.filter(
+          (taskproyect) => taskproyect._id === action.payload)
       };
       case UPDATE_TASK:
       return {
         ...state,
-        tasks:state.taskproyect.map((task) => task.idtask === action.payload.idtask?action.payload:task),
+        taskproyect:state.taskproyect.map((task) => task.idtask === action.payload.idtask?action.payload:task),
         taskedit: null
 
       };

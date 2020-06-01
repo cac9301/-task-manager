@@ -20,9 +20,11 @@ const Content = () => {
 
   //contexto
   const ProyectsContext = useContext(ProyectoContext);
-  const { flag, proyect,deletaProyect } = ProyectsContext;
+  const { flag, proyect,deletaProyect,errormeseg,mesejes } = ProyectsContext;
 
   if (proyect === null) return null;
+    
+  
  
   return (
     <main className={classes.content}>
@@ -58,10 +60,15 @@ const Content = () => {
                   >
                     Task Lists of Proyect:{proyect[0].name}
                   </Typography>
-                  <ListTask />
+                  {}
+                  <ListTask
+                  proyect={proyect[0]}
+                  />
                   <ButtonDelete
-                  proyect={proyect[0].id}
+                  proyect={proyect[0]._id}
                   deletaProyect={deletaProyect}
+                  errormeseg={errormeseg}
+                  mesejes={mesejes} 
                   />
                 </Paper>
               </Grid>

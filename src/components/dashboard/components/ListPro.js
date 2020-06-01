@@ -17,7 +17,7 @@ const ListPro = () => {
         <div>
             {proyects.map(proyect=>(
                 <ProyecList
-                key = {proyect.id}
+                key = {proyect._id}
                 proyect={proyect}
                 />
             ))}

@@ -40,7 +40,7 @@ const ProyecList = ({ proyect }) => {
         <Button
         fullWidth
         color="primary"
-        onClick={()=>sendIdforReducer(proyect.id)}
+        onClick={()=>sendIdforReducer(proyect._id)}
         size="small">
         <ListItemLink>
           <ListItemText primary={proyect.name} />

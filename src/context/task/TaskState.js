@@ -1,51 +1,69 @@
 import React, { useReducer } from "react";
 import TaskReducer from "./TaskReducer";
 import TaskContext from "./TaskContext";
-import { GET_TASK, ADD_TASK, DELETE_TASK,UPDATE_TASK,EDIT_TASK } from "../../types";
+import {
+  GET_TASK,
+  ADD_TASK,
+  DELETE_TASK,
+  UPDATE_TASK,
+  EDIT_TASK,
+} from "../../types";
+import clientAxios from "../../config/axios";
 
 const TaskState = (props) => {
   const initialState = {
-    tasks: [
-      { idtask: 12, name: "task 1", estado: false, id: 1 },
-      { idtask: 123, name: "task 2", estado: false, id: 1 },
-      { idtask: 112, name: "task 3", estado: false, id: 1 },
-      { idtask: 11111, name: "task 4", estado: false, id: 1 },
-      { idtask: 121212, name: "task 1", estado: false, id: 2 },
-      { idtask: 12312, name: "task 10", estado: false, id: 2 },
-      { idtask: 122223, name: "task 12", estado: false, id: 2 },
-      { idtask: 3333, name: "task withi id : 3", estado: false, id: 3 },
-      { idtask: 12321, name: "task 122", estado: false, id: 3 },
-      { idtask: 123123123, name: "task 31", estado: false, id: 3 },
-      { idtask: 4444, name: "task 32", estado: false, id: 3 },
-    ],
-    taskproyect: null,
+    proyects: [],
+    taskproyect: [],
     taskedit: null,
-   
   };
 
   // dispatch para ejecutar la acciones
   const [state, dispatch] = useReducer(TaskReducer, initialState);
   //operaciones
-  const getTaskForId = (proyectId) => {
-    dispatch({
-      type: GET_TASK,
-      payload: proyectId,
-    });
+  const getTaskForId = async (proyect_) => {
+    try {
+      const answer = await clientAxios.get("/api/tasks", {
+        params: { proyect_ },
+      });
+      const datos = answer.data.task;
+
+      dispatch({
+        type: GET_TASK,
+        payload: datos,
+      });
+    } catch (error) {
+      console.log(error.response);
+    }
   };
   //Deleta task
 
-  const deleteTaskForId = (proyectId) => {
-    dispatch({
-      type: DELETE_TASK,
-      payload: proyectId,
-    });
+  const deleteTaskForId = async (_id, proyect_) => {
+    try {
+      await clientAxios.delete(`/api/tasks/${_id}`, { params: { proyect_ } });
+      dispatch({
+        type: DELETE_TASK,
+        payload: _id,
+      });
+    } catch (error) {
+      console.log(error.response.data);
+    }
   };
   //funtion add a task
-  const addNewTask = (task) => {
-    dispatch({
-      type: ADD_TASK,
-      payload: task,
-    });
+  const addNewTask = async (task) => {
+    try {
+      const answer = await clientAxios.post("/api/tasks", task);
+      //eslint-disable-next-line
+      {
+        console.log(answer);
+      }
+
+      dispatch({
+        type: ADD_TASK,
+        payload: task,
+      });
+    } catch (error) {
+      console.log(error.response);
+    }
   };
   //funtion edit a task
   const selectEditTask = (idtask) => {
@@ -55,11 +73,18 @@ const TaskState = (props) => {
     });
   };
 
-  const uppdateTask = task => {
-    dispatch({
-      type: UPDATE_TASK,
-      payload: task
-    });
+  const uppdateTask = async (task) => {
+    try {
+      const answer = await clientAxios.put(`/api/tasks/${task._id}`, task);
+      console.log(answer);
+
+      dispatch({
+        type: UPDATE_TASK,
+        payload: task,
+      });
+    } catch (error) {
+      console.log(error.response);
+    }
   };
 
   return (
@@ -67,12 +92,12 @@ const TaskState = (props) => {
       value={{
         tasks: state.tasks,
         taskproyect: state.taskproyect,
-        taskedit:state.taskedit,
+        taskedit: state.taskedit,
         addNewTask,
         deleteTaskForId,
         getTaskForId,
         selectEditTask,
-        uppdateTask
+        uppdateTask,
       }}
     >
       {props.children}

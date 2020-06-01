@@ -1,26 +1,25 @@
 import React, { useReducer } from "react";
 import proyectReducer from "./ProyectReducer";
 import proyectoContext from "./ProyectoContext";
+import clientAxios from "../../config/axios";
 import { FORM_PROYECT } from "../../types";
 import { HIDE_PROYECT } from "../../types";
 import { GET_PROYECTS } from "../../types";
-import { ADD_PROYECTS,
-  GET_ACTUAL_PROYECT,DELETE_PROYECT} from "../../types";
-
+import {
+  ADD_PROYECTS,
+  GET_ACTUAL_PROYECT,
+  DELETE_PROYECT,
+  ERROR_SERVER,
+} from "../../types";
 
 const ProyectState = (props) => {
-  
-  const proyects = [
-    { id: 1, name: "tienda virtual", tipo: "sistmeas" },
-    { id: 2, name: "Desarrollo de Tienda virtual" },
-    { id: 3, name: "hacer cafe" },
-  ];
-
   const initialState = {
     form: false,
     proyects: [],
     proyect: null,
-    flag:false,
+    flag: false,
+    errormeseg: false,
+    mesejes: "",
   };
 
   // dispatch para ejecutar la acciones
@@ -28,42 +27,60 @@ const ProyectState = (props) => {
   //operaciones tipo crud
 
   const showForm = () => {
-    dispatch({type: FORM_PROYECT});
+    dispatch({ type: FORM_PROYECT });
   };
   const hideForm = () => {
-    dispatch({type: HIDE_PROYECT});
+    dispatch({ type: HIDE_PROYECT });
   };
 
   //Get Proyects
-  const getProyetcs = () =>{
-    dispatch(
-      {type: GET_PROYECTS,
-      payload:proyects
+  const getProyetcs = async () => {
+    try {
+      const answer = await clientAxios.get("/api/proyects");
+      const proyects = answer.data.proyects;
+
+      dispatch({ type: GET_PROYECTS, payload: proyects });
+    } catch (error) {}
+  };
+  // Add proyects
+  const addProyect = async (proyect) => {
+    try {
+      const answer = await clientAxios.post("/api/proyects", proyect);
+      const data = answer.data;
+      dispatch({
+        type: ADD_PROYECTS,
+        payload: data,
       });
-  }
-// Add proyects
-const addProyect = proyect =>{
-  var aleatorio = Math.round(Math.random()*1000);
-  proyect.id=aleatorio; 
-  dispatch(
-    {type: ADD_PROYECTS,
-    payload:proyect});
-}
+    } catch (error) {}
+  };
 
-// Select Proyect
-const selectProyect = proyectId =>{
-  dispatch(
-    {type: GET_ACTUAL_PROYECT,payload:proyectId});
-}
+  // Select Proyect
+  const selectProyect = (proyectId) => {
+    dispatch({ type: GET_ACTUAL_PROYECT, payload: proyectId });
+  };
 
-//Delete a proyect from the state 
+  //Delete a proyect from the state
 
-const deletaProyect = proyectId =>{
-  dispatch({
-    type:DELETE_PROYECT,
-    payload:proyectId
-  })
-}
+  const deletaProyect = async (proyectId) => {
+    try {
+      const answer = await clientAxios.delete(`/api/proyects/${proyectId}`);
+      //eslint-disable-next-line
+      {
+        console.log(answer);
+      }
+
+      dispatch({
+        type: DELETE_PROYECT,
+        payload: proyectId,
+      });
+    } catch (error) {
+      const errors = error.response.data;
+      dispatch({
+        type: ERROR_SERVER,
+        payload: errors,
+      });
+    }
+  };
 
   return (
     <proyectoContext.Provider
@@ -72,12 +89,14 @@ const deletaProyect = proyectId =>{
         proyects: state.proyects,
         proyect: state.proyect,
         flag: state.flag,
+        errormeseg: state.errormeseg,
+        mesejes: state.mesejes,
         showForm,
         hideForm,
         getProyetcs,
         addProyect,
         selectProyect,
-        deletaProyect
+        deletaProyect,
       }}
     >
       {props.children}
